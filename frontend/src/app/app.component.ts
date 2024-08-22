@@ -1,0 +1,22 @@
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { Test, TestService } from './services/test-service/test.service';
+import { Observable } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet, AsyncPipe],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss'
+})
+export class AppComponent {
+  constructor(private testService: TestService) {}
+  testValue$!: Observable<Test>;
+  
+  ngOnInit() {
+    this.testValue$ = this.testService.getTest();
+  }
+
+}
