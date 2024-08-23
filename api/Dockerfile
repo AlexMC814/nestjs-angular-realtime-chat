@@ -2,11 +2,14 @@ FROM node:20 AS development
 
 WORKDIR /usr/src/app
 
-COPY package*.json .
+COPY package.json ./
+COPY package-lock.json ./
+COPY tsconfig.json ./
+COPY tsconfig.build.json ./
 
 RUN npm install
 
-COPY . .
+# COPY . .
 
 RUN npm run build
 
