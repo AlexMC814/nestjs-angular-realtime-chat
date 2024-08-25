@@ -1,21 +1,22 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from, map, mapTo, Observable, switchMap } from 'rxjs';
+import { from, map, Observable, switchMap } from 'rxjs';
 import { UserEntity } from 'src/user/model/user.entity';
 import { IUser } from 'src/user/model/user.interface';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcryptjs';
 import {
   IPaginationOptions,
   paginate,
   Pagination,
 } from 'nestjs-typeorm-paginate';
+import { AuthService } from 'src/auth/services/auth/auth.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private authService: AuthService,
   ) {}
 
   private emailExists(email: string): Observable<boolean> {
@@ -31,8 +32,14 @@ export class UserService {
   }
 
   private hashPassword(password: string): Observable<string> {
-    const hash = bcrypt.hash(password, 12);
-    return from(hash);
+    return this.authService.hashPassword(password);
+  }
+
+  private validatePassword(
+    password: string,
+    storedPasswordHash: string,
+  ): Observable<boolean> {
+    return this.authService.comparePasswords(password, storedPasswordHash);
   }
 
   private findUser(id: number): Observable<IUser> {
@@ -48,20 +55,13 @@ export class UserService {
     );
   }
 
-  private validatePassword(
-    password: string,
-    storedPasswordHash: string,
-  ): Observable<boolean> {
-    return from(bcrypt.compare(password, storedPasswordHash));
-  }
-
   create(newUser: IUser): Observable<IUser> {
     return this.emailExists(newUser.email).pipe(
       switchMap((exists: boolean) => {
         if (!exists) {
           return this.hashPassword(newUser.password).pipe(
             switchMap((passwordHash: string) => {
-              // overwrite the user password with the hash? to store the hash in the db
+              // overwrite the user password with the hash to store the hash in the db
               newUser.password = passwordHash;
               return from(this.userRepository.save(newUser)).pipe(
                 switchMap((user: IUser) => this.findUser(user.id)),
@@ -82,14 +82,18 @@ export class UserService {
     return from(paginate<UserEntity>(this.userRepository, options));
   }
 
-  login(user: IUser): Observable<boolean> {
+  login(user: IUser): Observable<string> {
     return this.findByEmail(user.email).pipe(
       switchMap((foundUser: IUser) => {
         if (foundUser) {
           return this.validatePassword(user.password, foundUser.password).pipe(
             switchMap((matches: boolean) => {
               if (matches) {
-                return this.findUser(foundUser.id).pipe(map(() => true));
+                return this.findUser(foundUser.id).pipe(
+                  switchMap((payload: IUser) =>
+                    this.authService.generateJwt(payload),
+                  ),
+                );
               } else {
                 throw new HttpException(
                   'Login was not successful, wrong credentials',
