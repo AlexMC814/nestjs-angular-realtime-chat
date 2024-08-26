@@ -1,0 +1,27 @@
+.container {
+    display: flex;
+    justify-content: center;
+    margin: 100px;
+    min-width: 350px;
+
+    .button, .title, .login, .form {
+        display: flex;
+        justify-content: center;
+    }
+
+    .card {
+        padding: 10px;
+    }
+
+    .title {
+        margin-bottom: 20px;
+    }
+
+    .login {
+        margin-bottom: 20px;
+    }
+
+    .form {
+        flex-direction: column;
+    }
+}
