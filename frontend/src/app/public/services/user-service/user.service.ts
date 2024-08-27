@@ -26,6 +26,7 @@ export class UserService {
           horizontalPosition: 'right',
           verticalPosition: 'top'
         })
+        console.error('ERROR', e);
         return throwError(() => new Error(e));
       })
     );

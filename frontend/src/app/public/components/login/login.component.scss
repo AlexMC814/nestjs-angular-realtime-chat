@@ -1,0 +1,32 @@
+.container {
+    display: flex;
+    justify-content: center;
+    margin: 100px;
+    min-width: 350px;
+
+    .button, .title, .register, .form {
+        display: flex;
+        justify-content: center;
+    }
+
+    .card {
+        padding: 10px;
+    }
+
+    .title {
+        margin-bottom: 20px;
+    }
+
+    .register {
+        margin-bottom: 20px;
+    }
+
+    .form {
+        flex-direction: column;
+    }
+
+    .form-field {
+        width: 100%;
+        min-width: 300px;
+    }
+}
