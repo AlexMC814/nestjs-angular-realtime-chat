@@ -82,6 +82,10 @@ export class UserService {
     return from(paginate<UserEntity>(this.userRepository, options));
   }
 
+  getOne(id: number): Promise<IUser> {
+    return this.userRepository.findOneOrFail({ where: { id } });
+  }
+
   login(user: IUser): Observable<string> {
     return this.findByEmail(user.email).pipe(
       switchMap((foundUser: IUser) => {
