@@ -22,7 +22,7 @@ export const appConfig: ApplicationConfig = {
           tokenGetter,
           allowedDomains: ['localhost:3000']
         }
-      })
+      }),
     )
   ]
 };
