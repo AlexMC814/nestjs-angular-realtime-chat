@@ -1,0 +1,20 @@
+.container {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+    min-width: 350px;
+}
+
+.card-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.message-list {
+    &-item {
+        .mdc-radio__background {
+            display: none !important;
+    }
+}
+}
+
