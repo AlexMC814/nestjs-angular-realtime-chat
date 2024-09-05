@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Test, TestService } from './services/test-service/test.service';
-import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
@@ -13,11 +11,5 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  constructor(private testService: TestService) {}
-  testValue$!: Observable<Test>;
-  
-  ngOnInit() {
-    this.testValue$ = this.testService.getTest();
-  }
-
+  constructor() {}
 }
