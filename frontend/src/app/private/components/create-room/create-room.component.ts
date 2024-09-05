@@ -16,8 +16,8 @@ import { ChatService } from '../../services/chat-service/chat.service';
 })
 export class CreateRoomComponent {
   constructor(
-    private chatService: ChatService,
     private router: Router,
+    private chatService: ChatService,
     private activatedRoute: ActivatedRoute
   ) {}
 
@@ -45,7 +45,6 @@ export class CreateRoomComponent {
   }
 
   addUser(userFormControl: FormControl) {
-    console.info('USERS', this.users);
     this.users.push(userFormControl);
   }
 

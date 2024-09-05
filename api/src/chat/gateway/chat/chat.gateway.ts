@@ -8,9 +8,11 @@ import {
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { AuthService } from 'src/auth/services/auth/auth.service';
+import { IConnectedUser } from 'src/chat/model/connected-user.interface';
 import { IPage } from 'src/chat/model/page.interface';
 import { IRoom } from 'src/chat/model/room.interface';
-import { RoomService } from 'src/chat/services/room-service/room/room.service';
+import { ConnectedUserService } from 'src/chat/services/connected-user/connected-user.service';
+import { RoomService } from 'src/chat/services/room-service/room.service';
 import { IUser } from 'src/user/model/user.interface';
 import { UserService } from 'src/user/services/user-service/user.service';
 
@@ -31,6 +33,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private authService: AuthService,
     private userService: UserService,
     private roomService: RoomService,
+    private connectedUserService: ConnectedUserService,
   ) {}
 
   @SubscribeMessage('message')
@@ -57,6 +60,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       //  substruct page-1 to match the angular material paginator
       rooms.meta.currentPage = rooms.meta.currentPage - 1;
 
+      // Save connection to DB
+      await this.connectedUserService.create({ socketId: socket.id, user });
+
       // Only emit rooms to the specific connected client
       return this.server.to(socket.id).emit('rooms', rooms);
     } catch {
@@ -64,7 +70,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  handleDisconnect(socket: Socket) {
+  async handleDisconnect(socket: Socket) {
+    // Remove connection from DB
+    await this.connectedUserService.deleteBySocketId(socket.id);
     socket.disconnect();
   }
 
@@ -74,8 +82,24 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('createRoom')
-  async onCreateRoom(socket: Socket, room: IRoom): Promise<IRoom> {
-    return this.roomService.createRoom(room, socket.data.user);
+  async onCreateRoom(socket: Socket, room: IRoom) {
+    const createdRoom: IRoom = await this.roomService.createRoom(
+      room,
+      socket.data.user,
+    );
+
+    for (const user of createdRoom.users) {
+      const connections: IConnectedUser[] =
+        await this.connectedUserService.findByUser(user);
+      const rooms = await this.roomService.getRoomsForUser(user.id, {
+        page: 1,
+        limit: 10,
+      });
+
+      for (const connection of connections) {
+        this.server.to(connection.socketId).emit('rooms', rooms);
+      }
+    }
   }
 
   @SubscribeMessage('paginateRooms')
