@@ -1,4 +1,4 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { OnModuleInit, UnauthorizedException } from '@nestjs/common';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -25,7 +25,9 @@ import { UserService } from 'src/user/services/user-service/user.service';
     ],
   },
 })
-export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class ChatGateway
+  implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit
+{
   @WebSocketServer()
   server: Server;
 
@@ -35,6 +37,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private roomService: RoomService,
     private connectedUserService: ConnectedUserService,
   ) {}
+
+  async onModuleInit() {
+    await this.connectedUserService.deleteAll();
+  }
 
   @SubscribeMessage('message')
   handleMessage() {
@@ -46,6 +52,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const decodedToken = await this.authService.verifyJwt(
         socket.handshake.headers.authorization,
       );
+
       const user: IUser = await this.userService.getOne(decodedToken.user.id);
 
       if (!user) {
@@ -53,6 +60,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
 
       socket.data.user = user;
+
       const rooms = await this.roomService.getRoomsForUser(user.id, {
         page: 1,
         limit: 10,
@@ -91,6 +99,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     for (const user of createdRoom.users) {
       const connections: IConnectedUser[] =
         await this.connectedUserService.findByUser(user);
+
       const rooms = await this.roomService.getRoomsForUser(user.id, {
         page: 1,
         limit: 10,
