@@ -3,6 +3,9 @@
     <div class="card-container">
       <div>
         <h1>My Chatrooms</h1>
+        <div>
+          <small>Logged in as {{ user.username }}</small>
+        </div>
         <button mat-button [routerLink]="['../create-room']">
           Create new Room
         </button>

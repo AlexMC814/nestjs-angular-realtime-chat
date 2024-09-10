@@ -38,7 +38,6 @@ export class ChatService {
   }
 
   createRoom(room: IRoom) {
-
     this.socket.emit('createRoom', room);
     this.snackbar.open(`Room ${room.name} created successfully`, 'Close', {
       duration: 2000,

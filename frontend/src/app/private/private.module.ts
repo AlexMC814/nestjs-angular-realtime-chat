@@ -15,11 +15,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { CreateRoomComponent } from './components/create-room/create-room.component';
 import { SelectUsersComponent } from './components/select-users/select-users.component';
 import { ChatRoomComponent } from './components/chat-room/chat-room.component';
-import { MessageComponent } from "./components/message/message.component";
-
+import { MessageComponent } from './components/message/message.component';
 
 @NgModule({
-  declarations: [DashboardComponent, CreateRoomComponent, SelectUsersComponent, ChatRoomComponent],
+  declarations: [
+    DashboardComponent,
+    CreateRoomComponent,
+    SelectUsersComponent,
+    ChatRoomComponent,
+    MessageComponent,
+  ],
   imports: [
     CommonModule,
     PrivateRoutingModule,
@@ -34,7 +39,6 @@ import { MessageComponent } from "./components/message/message.component";
     MatChipsModule,
     MatAutocompleteModule,
     MatIconModule,
-    MessageComponent
-]
+  ],
 })
-export class PrivateModule { }
+export class PrivateModule {}

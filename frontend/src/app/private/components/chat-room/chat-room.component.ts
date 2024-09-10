@@ -7,7 +7,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { IRoom } from '../../../model/room.interface';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { IMessagePaginate } from '../../../model/message.interface';
 import { ChatService } from '../../services/chat-service/chat.service';
 import { FormControl, Validators } from '@angular/forms';
@@ -26,15 +26,24 @@ export class ChatRoomComponent implements OnInit, OnChanges, OnDestroy {
   messages$: Observable<IMessagePaginate>;
 
   ngOnInit() {
-    this.messages$ = this.chatService.getMessages();
+    this.messages$ = this.chatService.getMessages().pipe(
+      map((messagePaginate: IMessagePaginate) => {
+        const items = messagePaginate.items.sort(
+          (a, b) =>
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        );
+        messagePaginate.items = items;
+        return messagePaginate;
+      })
+    );
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.chatService.leaveRoom(changes['chatRoom'].previousValue);
+    console.info(changes['chatRoom'].previousValue);
+    // this.chatService.leaveRoom(changes['chatRoom'].previousValue);
 
     if (this.chatRoom) {
       this.chatService.joinRoom(this.chatRoom);
-      this.messages$ = this.chatService.getMessages();
     }
   }
 
@@ -43,7 +52,10 @@ export class ChatRoomComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   sendMessage() {
-    this.chatService.sendMessage({ text: this.chatMessage.value, room: this.chatRoom });
+    this.chatService.sendMessage({
+      text: this.chatMessage.value,
+      room: this.chatRoom,
+    });
     this.chatMessage.reset();
   }
 }
