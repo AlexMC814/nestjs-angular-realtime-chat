@@ -21,13 +21,17 @@ export class MessageService {
     return this.messageRepository.save(this.messageRepository.create(message));
   }
 
-  async findMessageForRoom(
+  async findMessagesForRoom(
     room: IRoom,
     options: IPaginationOptions,
   ): Promise<Pagination<IMessage>> {
-    return paginate(this.messageRepository, options, {
-      room,
-      relations: ['user', 'room'],
-    });
+    const query = this.messageRepository
+      .createQueryBuilder('message')
+      .leftJoin('message.room', 'room')
+      .where('room.id = :roomId', { roomId: room.id })
+      .leftJoinAndSelect('message.user', 'user')
+      .orderBy('message.created_at', 'DESC');
+
+    return paginate(query, options);
   }
 }

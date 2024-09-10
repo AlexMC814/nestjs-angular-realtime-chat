@@ -49,11 +49,6 @@ export class ChatGateway
     await this.joinedRoomService.deleteAll();
   }
 
-  @SubscribeMessage('message')
-  handleMessage() {
-    this.server.emit('message', 'test');
-  }
-
   async handleConnection(socket: Socket) {
     try {
       const decodedToken = await this.authService.verifyJwt(
@@ -134,7 +129,7 @@ export class ChatGateway
 
   @SubscribeMessage('joinRoom')
   async onJoinRoom(socket: Socket, room: IRoom) {
-    const messages = await this.messageService.findMessageForRoom(room, {
+    const messages = await this.messageService.findMessagesForRoom(room, {
       limit: 10,
       page: 1,
     });
@@ -149,7 +144,7 @@ export class ChatGateway
     });
 
     // Send last messages from room to user
-    await this.server.to(socket.id).emit('messages', messages);
+    this.server.to(socket.id).emit('messages', messages);
   }
 
   @SubscribeMessage('leaveRoom')
@@ -165,7 +160,8 @@ export class ChatGateway
       user: socket.data.user,
     });
     const room: IRoom = await this.roomService.getRoom(createdMessage.room.id);
-    const joinedUsers: IJoinedRoom[] = await this.joinedRoomService.findByRoom(room);
+    const joinedUsers: IJoinedRoom[] =
+      await this.joinedRoomService.findByRoom(room);
     // TODO: Send new message to all joined users of the toom (currently online)
   }
 

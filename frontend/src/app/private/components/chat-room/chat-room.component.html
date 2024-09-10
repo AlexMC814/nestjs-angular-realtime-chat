@@ -1,0 +1,39 @@
+<div *ngIf="chatRoom; else no_chatroom_selected" class="chatroom">
+  <!-- Heading -->
+  <div class="chatroom-heading">
+    <h2>{{ chatRoom.name }}</h2>
+    <span class="chatroom-heading-date">
+      <mat-icon>event</mat-icon>
+      <p class="chatroom-updated">{{ chatRoom.updated_at | date }}</p>
+    </span>
+  </div>
+  <h3 class="chatroom-description">{{ chatRoom.description }}</h3>
+  <mat-chip-set>
+    <mat-chip *ngFor="let user of chatRoom.users">{{ user.username }}</mat-chip>
+  </mat-chip-set>
+
+  <!-- Messages -->
+  <div class="chatroom-messages-field">
+    <div #messages class="message">
+        <span *ngFor="let message of (messages$ | async)?.items">
+          <app-message [message]="message"></app-message>
+        </span>
+      </div>
+  </div>
+
+  <div class="new-message">
+    <mat-form-field>
+      <input matInput [formControl]="chatMessage" type="text" />
+    </mat-form-field>
+    <button mat-button [disabled]="!chatMessage.valid" (click)="sendMessage()">
+      <span style="display: flex; flex-direction: row; align-items: center">
+        <mat-icon style="margin-left: 20px">send</mat-icon>
+        <p style="margin-left: 10px">Send</p>
+      </span>
+    </button>
+  </div>
+</div>
+
+<ng-template #no_chatroom_selected>
+  <mat-error>No Chatroom Selected</mat-error>
+</ng-template>

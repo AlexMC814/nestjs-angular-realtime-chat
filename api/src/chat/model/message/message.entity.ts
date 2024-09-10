@@ -1,3 +1,4 @@
+import { RoomEntity } from '../room/room.entity';
 import { UserEntity } from 'src/user/model/user.entity';
 import {
   Column,
@@ -9,7 +10,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { RoomEntity } from '../room/room.entity';
 
 @Entity()
 export class MessageEntity {

@@ -14,10 +14,12 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
 import { CreateRoomComponent } from './components/create-room/create-room.component';
 import { SelectUsersComponent } from './components/select-users/select-users.component';
+import { ChatRoomComponent } from './components/chat-room/chat-room.component';
+import { MessageComponent } from "./components/message/message.component";
 
 
 @NgModule({
-  declarations: [DashboardComponent, CreateRoomComponent, SelectUsersComponent],
+  declarations: [DashboardComponent, CreateRoomComponent, SelectUsersComponent, ChatRoomComponent],
   imports: [
     CommonModule,
     PrivateRoutingModule,
@@ -31,7 +33,8 @@ import { SelectUsersComponent } from './components/select-users/select-users.com
     MatChipListbox,
     MatChipsModule,
     MatAutocompleteModule,
-    MatIconModule
+    MatIconModule,
+    MessageComponent
 ]
 })
 export class PrivateModule { }

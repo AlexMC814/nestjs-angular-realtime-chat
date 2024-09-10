@@ -1,0 +1,26 @@
+.chatroom {
+  &-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+    &-date {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+  
+      &-updated {
+        margin-left: 10px;
+      }
+    }
+  }
+
+  &-description {
+    color: grey;
+  }
+
+  &-messages-field {
+    height: 70vh;
+    overflow-y: scroll;
+  }
+}
