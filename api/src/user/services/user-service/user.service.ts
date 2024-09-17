@@ -9,6 +9,7 @@ import {
   Pagination,
 } from 'nestjs-typeorm-paginate';
 import { AuthService } from 'src/auth/services/auth/auth.service';
+import { from } from 'rxjs';
 
 @Injectable()
 export class UserService {
@@ -114,5 +115,9 @@ export class UserService {
         HttpStatus.UNAUTHORIZED,
       );
     }
+  }
+
+  updateUser(id: number, user: IUser) {
+    return from(this.userRepository.update(id, user));
   }
 }

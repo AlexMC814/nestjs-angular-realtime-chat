@@ -1,42 +1,43 @@
-<mat-form-field>
-  <input
-    matInput
-    placeholder="Search user by username"
-    [matAutocomplete]="auto"
-    [formControl]="searchUsername"
-  />
-  <mat-autocomplete
-    #auto="matAutocomplete"
-    [displayWith]="displayFn"
-    (optionSelected)="setSelectedUser($event.option.value)"
+<div class="formgroup-inline">
+  <div class="field">
+    <p-autoComplete
+      showClear
+      field="username"
+      scrollHeight="100px"
+      [suggestions]="filteredUsers"
+      [formControl]="searchUsername"
+      placeholder="Search user by username"
+      (onSelect)="setSelectedUser($event.value)"
+    >
+      <ng-template let-user pTemplate="item">
+        <div class="flex align-items-center gap-2">
+          <div>{{ user.username }}</div>
+        </div>
+      </ng-template>
+    </p-autoComplete>
+  </div>
+  <p-button
+    type="button"
+    text
+    [disabled]="!selectedUser"
+    (click)="addUserToForm()"
   >
-    <ng-container>
-      <mat-option *ngFor="let user of filteredUsers" [value]="user">
-        <span>{{ user.username }}</span>
-        <small> | ID: {{ user.id }}</small>
-      </mat-option>
-    </ng-container>
-  </mat-autocomplete>
-</mat-form-field>
-<button
-  mat-button
-  type="button"
-  [disabled]="!selectedUser"
-  (click)="addUserToForm()"
->
-  Add User
-</button>
+    Add User
+  </p-button>
+</div>
 
-<mat-chip-listbox *ngIf="users?.length > 0; else no_users">
-  <mat-chip-option
+<div *ngIf="users?.length > 0; else no_users">
+  <p-chip
+    class="chip"
+    [removable]="true"
+    [label]="user.username"
     *ngFor="let user of users"
-    (removed)="removeUserFromForm(user)"
-  >
-    {{ user.username }}
-    <mat-icon matChipRemove>cancel</mat-icon>
-  </mat-chip-option>
-</mat-chip-listbox>
+    (onRemove)="removeUserFromForm(user)"
+  />
+</div>
 
 <ng-template #no_users>
-  <mat-error>No users added so far</mat-error>
+  <div>
+    <small>No users added so far</small>
+  </div>
 </ng-template>

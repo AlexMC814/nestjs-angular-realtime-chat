@@ -1,37 +1,100 @@
 <div class="container">
-    <div>
-        <div class="login">
-            <a mat-button [routerLink]="['../login']">Go to Login Page</a>
-        </div>
-        <div>
-            <mat-card class="card">
-                <mat-card-title class="title">Register</mat-card-title>
-                <mat-card-content>
-                    <form class="form" [formGroup]="form" (ngSubmit)="register()">
-                        <mat-form-field class="form-field">
-                            <input type="email" matInput placeholder="Email" formControlName="email" >
-                            <mat-error *ngIf="email.touched && email.hasError('required')">Email is required</mat-error>
-                            <mat-error *ngIf="email.touched && email.hasError('email')">Email must be valid</mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="form-field">
-                            <input type="text" matInput placeholder="Username" formControlName="username" >
-                            <mat-error *ngIf="username.touched && username.hasError('required')">Username is required</mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="form-field">
-                            <input type="password" matInput placeholder="Password" formControlName="password" >
-                            <mat-error *ngIf="password.touched && password.hasError('required')">Password is required</mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="form-field">
-                            <input type="password" matInput placeholder="Password Confirmation" formControlName="passwordConfirm" >
-                        </mat-form-field>
-                        <!-- <mat-hint *ngIf="form.touched && !form.valid"><small>Please fill out all needed information</small></mat-hint> -->
-                        <mat-error *ngIf="passwordConfirm.touched && form.hasError('passwordsNotMatching')"><small>Passwords are not matching</small></mat-error>
-                        <div class="button">
-                            <button mat-button type="submit" [disabled]="!form.valid">Register</button>
-                        </div>
-                    </form>
-                </mat-card-content>
-            </mat-card>
-        </div>
+  <div>
+    <div class="register">
+      <p-button text [routerLink]="['../login']" label=""
+        >Go to Login Page</p-button
+      >
     </div>
+    <form class="form" [formGroup]="form" (ngSubmit)="register()">
+      <p-card header="Register">
+        <ng-template pTemplate="content">
+          <div class="field mb-4">
+            <p-iconField iconPosition="left" styleClass="iconField">
+              <p-inputIcon styleClass="pi pi-at" />
+              <input
+                type="email"
+                pInputText
+                class="fullWidth"
+                placeholder="Email"
+                formControlName="email"
+              />
+              <small
+                class="error"
+                *ngIf="email.touched && email.hasError('required')"
+                >Email is required
+              </small>
+              <small
+                class="error"
+                *ngIf="email.touched && email.hasError('email')"
+                >Email must be valid
+              </small>
+            </p-iconField>
+          </div>
+          <div class="field mb-4">
+            <p-iconField iconPosition="left" styleClass="iconField">
+              <p-inputIcon styleClass="pi pi-user" />
+              <input
+                type="text"
+                pInputText
+                class="fullWidth"
+                placeholder="Username"
+                formControlName="username"
+              />
+              <small
+                class="error"
+                *ngIf="username.touched && username.hasError('required')"
+                >Username is required</small
+              >
+            </p-iconField>
+          </div>
+          <div class="field mb-4">
+            <p-iconField iconPosition="left" styleClass="iconField">
+              <p-inputIcon styleClass="pi pi-lock" />
+              <input
+                type="password"
+                pInputText
+                class="fullWidth"
+                placeholder="Password"
+                formControlName="password"
+              />
+              <small
+                class="error"
+                *ngIf="password.touched && password.hasError('required')"
+                >Password is required</small
+              >
+            </p-iconField>
+          </div>
+          <div class="field mb-4">
+            <p-iconField iconPosition="left" styleClass="iconField">
+              <p-inputIcon styleClass="pi pi-lock" />
+              <input
+                type="password"
+                pInputText
+                class="fullWidth"
+                placeholder="Password Confirmation"
+                formControlName="passwordConfirm"
+              />
+              <small
+                class="error"
+                *ngIf="
+                  passwordConfirm.touched &&
+                  form.hasError('passwordsNotMatching')
+                "
+              >Passwords are not matching</small>
+            </p-iconField>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <div class="flex justify-content-center">
+            <p-button
+              type="submit"
+              [disabled]="!form.valid"
+              text
+              styleClass="w-full"
+            >Register</p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </form>
+  </div>
 </div>

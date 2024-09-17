@@ -24,6 +24,10 @@ export class AuthService {
     );
   }
 
+  logout() {
+    localStorage.setItem('nestjs-chat-app', '');
+  }
+
   getLoggedInUser() {
     const decodedToken = this.jwtService.decodeToken();
     return decodedToken.user;

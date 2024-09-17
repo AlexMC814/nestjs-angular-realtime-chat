@@ -1,10 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  IPaginationOptions,
-  paginate,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
 import { RoomEntity } from 'src/chat/model/room/room.entity';
 import { IRoom } from 'src/chat/model/room/room.interface';
 import { IUser } from 'src/user/model/user.interface';
@@ -34,17 +29,15 @@ export class RoomService {
     });
   }
 
-  async getRoomsForUser(
-    userId: number,
-    options: IPaginationOptions,
-  ): Promise<Pagination<IRoom>> {
+  async getRoomsForUser(userId: number): Promise<IRoom[]> {
     const query = this.roomRepository
       .createQueryBuilder('room')
       .leftJoin('room.users', 'users')
       .where('users.id = :userId', { userId })
       .leftJoinAndSelect('room.users', 'all_users')
-      .orderBy('room.updated_at', 'DESC');
+      .orderBy('room.updated_at', 'DESC')
+      .getMany();
 
-    return paginate(query, options);
+    return query;
   }
 }

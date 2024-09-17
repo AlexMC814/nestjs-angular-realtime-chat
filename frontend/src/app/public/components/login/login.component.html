@@ -1,10 +1,80 @@
 <div class="container">
+  <div>
+    <div class="login">
+      <p-button text [routerLink]="['../register']"
+        >Go to Register Page</p-button
+      >
+      <!-- <a mat-button [routerLink]="['../register']">Go to Register Page</a> -->
+    </div>
     <div>
-        <div class="register">
-            <a mat-button [routerLink]="['../register']">Go to Register Page</a>
-        </div>
-        <div>
-            <mat-card class="card">
+      <form class="form" [formGroup]="form" (ngSubmit)="login()">
+        <p-card header="Login">
+          <ng-template pTemplate="content">
+            <div class="field mb-4">
+              <p-iconField iconPosition="left" styleClass="iconField">
+                <p-inputIcon styleClass="pi pi-at" />
+                <input
+                  type="text"
+                  pInputText
+                  class="fullWidth"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      (email.hasError('required') && email.touched) ||
+                      (email.hasError('email') && email.touched)
+                  }"
+                  placeholder="Email"
+                  formControlName="email"
+                />
+                <small
+                  *ngIf="email.touched && email.hasError('required')"
+                  class="error"
+                >
+                  Email is required
+                </small>
+                <small
+                  *ngIf="email.touched && email.hasError('email')"
+                  class="error"
+                >
+                  Email must be valid
+                </small>
+              </p-iconField>
+            </div>
+            <div class="field mb-4">
+              <p-iconField iconPosition="left">
+                <p-inputIcon styleClass="pi pi-lock" />
+                <input
+                  type="password"
+                  pInputText
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      password.hasError('required') && password.touched
+                  }"
+                  class="fullWidth"
+                  placeholder="Password"
+                  formControlName="password"
+                />
+                <small
+                  *ngIf="password.touched && password.hasError('required')"
+                  class="error"
+                >
+                  Password is required
+                </small>
+              </p-iconField>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="footer">
+            <div class="flex justify-content-center">
+              <p-button
+                type="submit"
+                [disabled]="!form.valid"
+                text
+                styleClass="w-full"
+              >Login</p-button>
+            </div>
+          </ng-template>
+        </p-card>
+      </form>
+      <!-- <mat-card class="card">
                 <mat-card-title class="title">Login</mat-card-title>
                 <mat-card-content>
                     <form class="form" [formGroup]="form" (ngSubmit)="login()">
@@ -22,7 +92,7 @@
                         </div>
                     </form>
                 </mat-card-content>
-            </mat-card>
-        </div>
+            </mat-card> -->
     </div>
+  </div>
 </div>

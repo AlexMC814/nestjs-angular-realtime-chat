@@ -5,35 +5,56 @@
     <span class="chatroom-heading-date">
       <mat-icon>event</mat-icon>
       <p class="chatroom-updated">{{ chatRoom.updated_at | date }}</p>
+      <p-button text (click)="onLogout()" class="logout">Logout</p-button>
     </span>
   </div>
-  <h3 class="chatroom-description">{{ chatRoom.description }}</h3>
-  <mat-chip-set>
-    <mat-chip *ngFor="let user of chatRoom.users">{{ user.username }}</mat-chip>
-  </mat-chip-set>
-
-  <!-- Messages -->
-  <div class="chatroom-messages-field">
-    <div #messages class="message">
-        <span *ngFor="let message of (messages$ | async)?.items">
-          <app-message [message]="message"></app-message>
-        </span>
-      </div>
+  <div class="chatroom-sub">
+    <h3 class="chatroom-description">{{ chatRoom.description }}</h3>
+    <div class="chatroom-participants">
+      <p>Participants:</p>
+      <mat-chip-set>
+        <mat-chip *ngFor="let user of chatRoom.users">{{
+          user.username
+        }}</mat-chip>
+      </mat-chip-set>
+    </div>
   </div>
 
-  <div class="new-message">
-    <mat-form-field>
-      <input matInput [formControl]="chatMessage" type="text" />
-    </mat-form-field>
-    <button mat-button [disabled]="!chatMessage.valid" (click)="sendMessage()">
-      <span style="display: flex; flex-direction: row; align-items: center">
-        <mat-icon style="margin-left: 20px">send</mat-icon>
-        <p style="margin-left: 10px">Send</p>
+  <!-- Messages -->
+  <div #messages class="chatroom-messages-field">
+    <div class="message">
+      <span *ngFor="let message of (messages$ | async)?.items">
+        <app-message [message]="message"></app-message>
       </span>
-    </button>
+    </div>
+  </div>
+
+  <div class="formgrid grid mt-4">
+    <div class="field col-10">
+      <input
+        class="new-message-input"
+        pInputText
+        class="fullWidth"
+        [formControl]="chatMessage"
+        type="text"
+      />
+    </div>
+    <div class="field col-2">
+      <p-button
+        [disabled]="!chatMessage.valid"
+        icon="pi pi-send"
+        iconPos="right"
+        styleClass="fullWidth"
+        (click)="sendMessage()"
+      >
+        Send
+      </p-button>
+    </div>
   </div>
 </div>
 
 <ng-template #no_chatroom_selected>
-  <mat-error>No Chatroom Selected</mat-error>
+  <div class="no-chatroom">
+    <h3>No Chatroom Selected</h3>
+  </div>
 </ng-template>

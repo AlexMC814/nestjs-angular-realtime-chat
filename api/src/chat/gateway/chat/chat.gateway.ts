@@ -11,7 +11,6 @@ import { AuthService } from 'src/auth/services/auth/auth.service';
 import { IConnectedUser } from 'src/chat/model/connected-user/connected-user.interface';
 import { IJoinedRoom } from 'src/chat/model/joined-room/joined-room.interface';
 import { IMessage } from 'src/chat/model/message/message.interface';
-import { IPage } from 'src/chat/model/page.interface';
 import { IRoom } from 'src/chat/model/room/room.interface';
 import { ConnectedUserService } from 'src/chat/services/connected-user/connected-user.service';
 import { JoinedRoomService } from 'src/chat/services/joined-room/joined-room.service';
@@ -63,12 +62,7 @@ export class ChatGateway
 
       socket.data.user = user;
 
-      const rooms = await this.roomService.getRoomsForUser(user.id, {
-        page: 1,
-        limit: 10,
-      });
-      //  substruct page-1 to match the angular material paginator
-      rooms.meta.currentPage = rooms.meta.currentPage - 1;
+      const rooms = await this.roomService.getRoomsForUser(user.id);
 
       // Save connection to DB
       await this.connectedUserService.create({ socketId: socket.id, user });
@@ -101,14 +95,7 @@ export class ChatGateway
     for (const user of createdRoom.users) {
       const connections: IConnectedUser[] =
         await this.connectedUserService.findByUser(user);
-
-      const rooms = await this.roomService.getRoomsForUser(user.id, {
-        page: 1,
-        limit: 10,
-      });
-
-      // subtract page -1 to match angular material paginator
-      rooms.meta.currentPage = rooms.meta.currentPage - 1;
+      const rooms = await this.roomService.getRoomsForUser(user.id);
 
       for (const connection of connections) {
         this.server.to(connection.socketId).emit('rooms', rooms);
@@ -116,14 +103,10 @@ export class ChatGateway
     }
   }
 
-  @SubscribeMessage('paginateRooms')
-  async onPaginateRoom(socket: Socket, page: IPage) {
-    const rooms = await this.roomService.getRoomsForUser(
-      socket.data.user.id,
-      this.handleIncomingPageRequest(page),
-    );
-    //  substruct page-1 to match the angular material paginator
-    rooms.meta.currentPage = rooms.meta.currentPage - 1;
+  @SubscribeMessage('getRooms')
+  async onPaginateRoom(socket: Socket) {
+    const rooms = await this.roomService.getRoomsForUser(socket.data.user.id);
+
     return this.server.to(socket.id).emit('rooms', rooms);
   }
 
@@ -150,7 +133,7 @@ export class ChatGateway
   @SubscribeMessage('leaveRoom')
   async onLeaveRoom(socket: Socket) {
     // remove connection from JoinedRooms
-    await this.joinedRoomService.deletedBySocketID(socket.id);
+    await this.joinedRoomService.deleteBySocketID(socket.id);
   }
 
   @SubscribeMessage('addMessage')
@@ -160,16 +143,12 @@ export class ChatGateway
       user: socket.data.user,
     });
     const room: IRoom = await this.roomService.getRoom(createdMessage.room.id);
-    const joinedUsers: IJoinedRoom[] =
+    const joinedRooms: IJoinedRoom[] =
       await this.joinedRoomService.findByRoom(room);
-    // TODO: Send new message to all joined users of the toom (currently online)
-  }
 
-  private handleIncomingPageRequest(page: IPage) {
-    page.limit = page.limit > 100 ? 100 : page.limit;
-    //  add page+1 to match the angular material paginator
-    page.page = page.page + 1;
-
-    return page;
+    // TODO: Send new message to all joined users of the room (currently online)
+    for (const r of joinedRooms) {
+      this.server.to(r.socketId).emit('messageAdded', createdMessage);
+    }
   }
 }

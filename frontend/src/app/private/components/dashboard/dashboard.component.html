@@ -1,54 +1,63 @@
 <div class="container">
-  <mat-card class="card">
+  <div class="card">
     <div class="card-container">
-      <div>
-        <h1>My Chatrooms</h1>
-        <div>
-          <small>Logged in as {{ user.username }}</small>
-        </div>
-        <button mat-button [routerLink]="['../create-room']">
-          Create new Room
-        </button>
+      <mat-drawer-container class="drawer-container" autosize>
+        <mat-drawer #drawer class="drawer-sidenav" mode="side">
+          <div class="card-inner">
+            <div class="card-heading">
+              <div class="card-heading-logged-in-user">
+                <p-avatar
+                  icon="pi pi-user"
+                  styleClass="mr-2"
+                  shape="circle"
+                />
 
-        <div
-          *ngIf="(rooms$ | async)?.items.length > 0; else no_rooms"
-          class="rooms"
-        >
-          <mat-selection-list
-            class="message-list"
-            [multiple]="false"
-            (selectionChange)="onSelectRooms($event)"
-          >
-            <mat-list-option
-              class="message-list-item"
-              *ngFor="let room of (rooms$ | async)?.items"
-              [value]="room"
+                <small>{{ user.username }}</small>
+              </div>
+              <div class="card-heading-info">
+                <h1 [routerLink]="['/']">My Chatrooms</h1>
+              </div>
+              <p-button outlined styleClass="fullWidth" (onClick)="isDialogVisible = !isDialogVisible">
+                Create new Room
+              </p-button>
+              <app-create-room [visible]="isDialogVisible"></app-create-room>
+            </div>
+
+            <div
+              *ngIf="(rooms$ | async)?.length > 0; else no_rooms"
+              class="rooms"
             >
-              Name: {{ room.name }} Id: {{ room.id }}
-              <mat-divider></mat-divider>
-            </mat-list-option>
-          </mat-selection-list>
-          <mat-paginator
-            [length]="(rooms$ | async)?.meta?.totalItems"
-            [pageIndex]="(rooms$ | async)?.meta?.currentPage"
-            [pageSize]="(rooms$ | async)?.meta?.itemsPerPage"
-            (page)="onPaginateRooms($event)"
-            [pageSizeOptions]="[10, 25, 50]"
-          ></mat-paginator>
-        </div>
-      </div>
+              <mat-selection-list
+                hideSingleSelectionIndicator="true"
+                class="message-list"
+                [multiple]="false"
+                (selectionChange)="onSelectRooms($event)"
+              >
+                <mat-list-option
+                  class="message-list-item"
+                  *ngFor="let room of rooms$ | async"
+                  [selected]="selectedRoom && room.id === selectedRoom.id"
+                  [value]="room"
+                >
+                  {{ room.name }}
+                  <mat-divider></mat-divider>
+                </mat-list-option>
+              </mat-selection-list>
+            </div>
+          </div>
+        </mat-drawer>
 
-      <div class="chatroom">
-        <app-chat-room [chatRoom]="selectedRoom"></app-chat-room>
-      </div>
+        <div class="chatroom">
+          <span class="pi pi-bars toggle-btn" (click)="drawer.toggle()"></span>
+          <app-chat-room [chatRoom]="selectedRoom"></app-chat-room>
+        </div>
+      </mat-drawer-container>
     </div>
-  </mat-card>
+  </div>
 </div>
 
 <ng-template #no_rooms>
   <div>
-    <mat-error
-      >No Chatrooms for you so far, please create one or get invited</mat-error
-    >
+    <p>No Chatrooms for you so far, please create one or get invited</p>
   </div>
 </ng-template>

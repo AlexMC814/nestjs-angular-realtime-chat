@@ -1,6 +1,6 @@
-<span style="display: flex;" [ngClass]="{ownContainer: message.user.id === user.id}">
-    <p [ngClass]="{ownMessage: message.user.id === user.id}">
-      <em>{{message.user.username}} {{ message.created_at | date }}</em> <br /> {{message.text}}
-    </p>
-  
-  </span>
+<span class="message-container" [ngClass]="{ ownContainer: isOwnMessage }">
+  <p class="message-content" [ngClass]="{ ownMessage: isOwnMessage }">
+    <em>{{ message.user.username }} {{ message.created_at | date }}</em> <br />
+    {{ message.text }}
+  </p>
+</span>

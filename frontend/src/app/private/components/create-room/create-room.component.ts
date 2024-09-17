@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -20,6 +20,8 @@ export class CreateRoomComponent {
     private chatService: ChatService,
     private activatedRoute: ActivatedRoute
   ) {}
+  @Input() visible: boolean;
+  @Output() closeDialog: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   form: FormGroup = new FormGroup({
     name: new FormControl(null, [Validators.required]),
@@ -34,6 +36,10 @@ export class CreateRoomComponent {
         relativeTo: this.activatedRoute,
       });
     }
+  }
+
+  hideDialog() {
+    this.closeDialog.emit(false)
   }
 
   initUser(user: IUser) {

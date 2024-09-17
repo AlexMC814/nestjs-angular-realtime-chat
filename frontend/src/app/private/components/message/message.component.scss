@@ -1,4 +1,9 @@
-p {
+.message {
+  &-container {
+    display: flex;
+  }
+
+  &-content {
     font-size: medium;
     background-color: lightgray;
     width: fit-content;
@@ -6,6 +11,7 @@ p {
     margin: 7px;
     padding: 15px;
   }
+}
   
   .ownContainer {
     justify-content: flex-end;

@@ -29,12 +29,16 @@ export class ChatService {
     return this.socket.fromEvent<IMessagePaginate>('messages');
   }
 
-  getMyRooms(): Observable<IRoomPaginate> {
-    return this.socket.fromEvent<IRoomPaginate>('rooms')
+  getAddedMessage(): Observable<IMessage> {
+    return this.socket.fromEvent<IMessage>('messageAdded');
   }
 
-  emitPaginateRooms(limit: number, page: number) {
-    this.socket.emit('paginateRooms', { limit, page });
+  getMyRooms(): Observable<IRoom[]> {
+    return this.socket.fromEvent<IRoom[]>('rooms');
+  }
+
+  emitGetRooms() {
+    this.socket.emit('getRooms');
   }
 
   createRoom(room: IRoom) {

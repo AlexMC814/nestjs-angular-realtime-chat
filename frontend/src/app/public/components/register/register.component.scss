@@ -1,7 +1,9 @@
 .container {
     display: flex;
     justify-content: center;
-    margin: 100px;
+    align-items: center;
+    height: 100vh;
+    // 
     min-width: 350px;
 
     .button, .title, .login, .form {
@@ -17,7 +19,9 @@
         margin-bottom: 20px;
     }
 
-    .login {
+    .register {
+        display: flex;
+        justify-content: center;
         margin-bottom: 20px;
     }
 

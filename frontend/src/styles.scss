@@ -1,4 +1,32 @@
-@use '@angular/material' as mat;
+*, *:after, *:before {
+  box-sizing: border-box;
+}
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.fullWidth {
+  display: block;
+  width: 100%;
+}
+
+.error {
+  position: absolute;
+  color: red;
+}
+
+.p-card-title {
+  text-align: center;
+}
+
+.chip {
+  &:not(:first-of-type) {
+    margin-left: 8px;
+  }
+}

@@ -1,7 +1,8 @@
 .container {
     display: flex;
+    height: 100vh;
     justify-content: center;
-    margin: 100px;
+    align-items: center;
     min-width: 350px;
 
     .button, .title, .register, .form {
@@ -17,7 +18,9 @@
         margin-bottom: 20px;
     }
 
-    .register {
+    .login {
+        display: flex;
+        justify-content: center;
         margin-bottom: 20px;
     }
 
@@ -28,5 +31,6 @@
     .form-field {
         width: 100%;
         min-width: 300px;
+        margin-bottom: 20px;
     }
 }

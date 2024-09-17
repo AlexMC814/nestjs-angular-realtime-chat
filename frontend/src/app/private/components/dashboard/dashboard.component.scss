@@ -5,37 +5,68 @@
 }
 
 .card {
-  position: fixed;
-  padding: 20px;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 
   &-container {
     display: flex;
     flex-direction: row;
   }
+
+  &-inner {
+    padding: 20px;
+  }
+
+  &-heading {
+    display: flex;
+    flex-direction: column;
+
+    &-info {
+      display: flex;
+      align-items: center;
+
+      h1 {
+        cursor: pointer;
+      }
+    }
+
+    &-logged-in-user {
+      margin-left: 10px;
+    }
+  }
+}
+
+.mat-drawer-container {
+  width: 100vw;
 }
 
 .rooms {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 500px;
+  height: 75vh;
   overflow: hidden;
   scrollbar-color: lightgrey darkgrey;
   scrollbar-width: thin;
 }
 
 .chatroom {
-  padding: 0 40px;
+  position: relative;
+  padding: 20px 60px;
   width: 100%;
 }
 
+.toggle-btn {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
 .message-list {
-  &-item {
-    .mdc-radio__background {
-      display: none !important;
-    }
+  &-item[aria-selected="true"] {
+    background: #97daf8;
+    border-radius: 5px;
+    color: white;
   }
 }
 

@@ -1,50 +1,47 @@
-<div class="container">
+<p-dialog
+  header="Create new room"
+  [modal]="true"
+  [(visible)]="visible"
+  (onHide)="hideDialog()"
+>
   <div>
-    <div class="dashboard">
-      <a mat-button [routerLink]="['../dashboard']">Go to Dashboard</a>
-    </div>
-    <div>
-      <mat-card class="card">
-        <mat-card-title class="title">Create Chatroom</mat-card-title>
-        <mat-card-content>
-          <form class="form" [formGroup]="form" (ngSubmit)="create()">
-            <mat-form-field class="form-field">
-              <input
-                type="text"
-                matInput
-                placeholder="name"
-                formControlName="name"
-              />
-              <mat-error *ngIf="name.touched && name.hasError('required')"
-                >Name is required</mat-error
-              >
-            </mat-form-field>
-            <mat-form-field class="form-field">
-              <input
-                type="text"
-                matInput
-                placeholder="Description"
-                formControlName="description"
-              />
-            </mat-form-field>
-
-            <app-select-users
-              [users]="users.value"
-              (addUser)="addUser(initUser($event))"
-              (removeUser)="removeUser($event.id)"
-            ></app-select-users>
-
-            <mat-hint *ngIf="!form.valid"
-              ><small>Please fill out all needed info</small></mat-hint
-            >
-            <div class="button">
-              <button mat-button type="submit" [disabled]="!form.valid">
-                Create Chatroom
-              </button>
-            </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
-    </div>
+    <form [formGroup]="form" (ngSubmit)="create()">
+      <div class="field mb-4">
+        <input
+          pInputText
+          type="text"
+          class="fullWidth"
+          placeholder="name"
+          formControlName="name"
+        />
+        <small class="error" *ngIf="name.touched && name.hasError('required')">
+          Name is required
+        </small>
+      </div>
+      <div class="field mb-4">
+        <input
+          type="text"
+          pInputText
+          class="fullWidth"
+          placeholder="Description"
+          formControlName="description"
+        />
+      </div>
+      <div class="field">
+        <app-select-users
+          [users]="users.value"
+          (addUser)="addUser(initUser($event))"
+          (removeUser)="removeUser($event.id)"
+        ></app-select-users>
+      </div>
+      <div *ngIf="form.touched && !form.valid">
+        <small>Please fill out all needed info</small>
+      </div>
+      <div class="button p-2 flex justify-content-center">
+        <p-button text type="submit" [disabled]="!form.valid">
+          Create Chatroom
+        </p-button>
+      </div>
+    </form>
   </div>
-</div>
+</p-dialog>

@@ -22,11 +22,17 @@ export class JoinedRoomService {
   }
 
   async findByRoom(room: IRoom): Promise<IJoinedRoom[]> {
-    return this.joinedRoomRepository.find({ where: { room } });
+    return this.joinedRoomRepository.find({
+      relations: ['room'],
+    });
   }
 
-  async deletedBySocketID(socketId: string) {
-    return this.joinedRoomRepository.delete(socketId);
+  async deleteBySocketID(socketId: string) {
+    return this.joinedRoomRepository
+      .createQueryBuilder()
+      .delete()
+      .from(JoinedRoomEntity)
+      .where('socketId = :socketId', { socketId });
   }
 
   async deleteAll() {
